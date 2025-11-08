@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOSTALGIA MUST DIE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Press Start 2P', cursive;
+            background: #000;
+            color: #0ff;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* SYNTHWAVE BACKGROUND */
+        .bg-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0a001f, #1a0033, #2a0066);
+            z-index: -2;
+        }
+        .grid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+            z-index: -1;
+        }
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        .sun {
+            position: absolute;
+            top: 30%; left: 50%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #ff0080, #8000ff, transparent);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            opacity: 0.6;
+            animation: pulse 6s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* GAME */
+        #game {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .scene {
+            background: rgba(10, 0, 30, 0.9);
+            border: 3px solid #ff00ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 
+                0 0 20px #ff00ff,
+                inset 0 0 30px rgba(255, 0, 255, 0.2);
+            min-height: 420px;
+            display: none;
+            animation: fadeIn 0.6s;
+        }
+        .scene.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #ff00ff;
+            text-align: center;
+            font-size: 2em;
+            margin: 0 0 25px;
+            text-shadow: 0 0 15px #ff00ff;
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff00ff; }
+            to { text-shadow: 0 0 25px #ff00ff, 0 0 35px #8000ff; }
+        }
+
+        .story-img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 0 15px #00ffff;
+            image-rendering: pixelated;
+        }
+
+        p {
+            line-height: 1.7;
+            margin: 18px 0;
+            font-size: 0.95em;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin: 14px 0;
+            background: linear-gradient(to bottom, #ff0080, #8000ff);
+            color: white;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1em;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(to bottom, #ff3399, #9933ff);
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px #00ffff;
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .ending {
+            text-align: center;
+            font-size: 1.3em;
+            line-height: 1.8;
+        }
+        .ending h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+        }
+
+        .boss-counter {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px 15px;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            font-size: 0.8em;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .continue-btn {
+            background: linear-gradient(to bottom, #00ff00, #008800);
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        .continue-btn:hover {
+            background: linear-gradient(to bottom, #33ff33, #00cc00);
+            box-shadow: 0 0 30px #00ff00;
+        }
+
+        .timer-text {
+            text-align: center;
+            color: #0f0;
+            font-size: 1.2em;
+            margin: 15px 0;
+            text-shadow: 0 0 8px #0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SYNTHWAVE BACKGROUND -->
+    <div class="bg-container">
+        <div class="grid"></div>
+        <div class="sun"></div>
+    </div>
+
+    <div id="game">
+        <div class="boss-counter">
+            GUARDIANS DEFEATED: <span id="defeatedCount">0</span>/4
+        </div>
+
+        <!-- AUDIO -->
+        <audio id="bgMusic" loop>
+            <source src="d:\html class\media\audio\music\track 1.mkv" type="audio/mp3">
+        </audio>
+        <audio id="clickSound">
+            <source src="https://www.orangefreesounds.com/wp-content/uploads/2017/01/Button-click-sound.mp3" type="audio/mp3">
+        </audio>
+        <audio id="victorySound">
+            <source src="https://www.myinstants.com/media/sounds/final-fantasy-vii-victory-fanfare-1.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gameOverSound">
+            <source src="https://orangefreesounds.com/wp-content/uploads/2023/04/Video-game-over-sound-effect.mp3" type="audio/mp3">
+        </audio>
+        <audio id="bossSound">
+            <source src="https://www.myinstants.com/media/sounds/imperial_march.mp3" type="audio/mp3">
+        </audio>
+
+        <!-- INTRO -->
+        <div id="intro" class="scene active">
+            <h1>NOSTALGIA MUST DIE</h1>
+            <img src="https://i.pinimg.com/originals/8e/5d/3b/8e5d3b9c7a7d1c8e8d7a9b0c1d2e3f4g.jpg" alt="90s Kid's Bedroom" class="story-img">
+            <p>You're <strong>TIMMY</strong>, age 10, from 2025. Your parents trap you in 90s hell: <em>Full House</em>, Tamagotchis, and "Macarena" on repeat.</p>
+            <p>A glowing Game Boy zaps you back to <strong>1999</strong>. You wake up in a real 90s house.</p>
+            <p><strong>DEFEAT ALL 4 GUARDIANS TO UNLOCK THE FINAL ENDING.</strong></p>
+            <button onclick="goTo('house')">ENTER THE 90s HOME</button>
+        </div>
+
+        <!-- MAIN HUB: 90s HOME -->
+        <div id="house" class="scene">
+            <h1>THE 90s HOUSE</h1>
+            <img src="https://i.pinimg.com/originals/3f/2a/1b/3f2a1b9c8d7e6f5a4b3c2d1e0f9g8h7i.jpg" alt="90s Living Room" class="story-img">
+            <p>Beige carpet. Wood paneling. A giant CRT TV hums. Pagers beep. The smell of microwaved popcorn and Drakkar Noir.</p>
+            <p>Choose a guardian to defeat:</p>
+            <button onclick="goTo('bedroom')">BEDROOM (KEVIN)</button>
+            <button onclick="goTo('living')">LIVING ROOM (FLASH)</button>
+            <button onclick="goTo('kitchen')">KITCHEN (ALF)</button>
+            <button onclick="goTo('backyard')">BACKYARD (DARTH MAUL)</button>
+        </div>
+
+        <!-- BEDROOM: KEVIN FROM HOME ALONE -->
+        <div id="bedroom" class="scene">
+            <h1>KEVIN'S BEDROOM</h1>
+            <img src="https://i.pinimg.com/originals/7c/8d/9e/7c8d9e0f1a2b3c4d5e6f7g8h9i0j1k.jpg" alt="90s Bedroom with Toys" class="story-img">
+            <p><strong>KEVIN MCCALLISTER</strong> stands on his bed, arms crossed. "This is my house!"</p>
+            <p>Traps everywhere: pizza boxes, Micro Machines, paint cans.</p>
+            <button onclick="defeatBoss('kevin')">SET OFF HIS OWN TRAPS</button>
+            <button onclick="goTo('kevin_fail')">TRY TO FIGHT HIM</button>
+        </div>
+
+        <!-- LIVING ROOM: FLASH GORDON -->
+        <div id="living" class="scene">
+            <h1>FLASH GORDON'S LIVING ROOM</h1>
+            <img src="https://i.pinimg.com/originals/2b/3c/4d/2b3c4d5e6f7g8h9i0j1k2l.jpg" alt="90s Living Room with VHS" class="story-img">
+            <p><strong>FLASH GORDON</strong> in full 80s glory (but 90s rerun) poses dramatically. "FLASH! AHHH!"</p>
+            <p>VHS tapes of his movie play on loop. The TV glows.</p>
+            <button onclick="defeatBoss('flash')">CALL MING THE MERCILESS</button>
+            <button onclick="goTo('flash_fail')">TRY TO UNPLUG TV</button>
+        </div>
+
+        <!-- KITCHEN: ALF -->
+        <div id="kitchen" class="scene">
+            <h1>ALF'S KITCHEN</h1>
+            <img src="https://i.pinimg.com/originals/6f/7g/8h/6f7g8h9i0j1k2l3m4n5o.jpg" alt="90s Kitchen with ALF" class="story-img">
+            <p><strong>ALF</strong> raids the fridge. "HA! I WANT TO EAT THE CAT!"</p>
+            <p>Cosmic Brownies, Surge, and a cat on the counter.</p>
+            <button onclick="defeatBoss('alf')">FEED HIM THE CAT (FAKE)</button>
+            <button onclick="goTo('alf_fail')">GIVE HIM REAL FOOD</button>
+        </div>
+
+        <!-- BACKYARD: DARTH MAUL -->
+        <div id="backyard" class="scene">
+            <h1>BACKYARD OF DOOM</h1>
+            <img src="https://i.pinimg.com/originals/5e/6f/7g/5e6f7g8h9i0j1k2l3m.jpg" alt="90s Backyard with Maul" class="story-img">
+            <p><strong>DARTH MAUL</strong> ignites his double lightsaber. "At last we will reveal ourselves..."</p>
+            <p>Pogs scatter. A Huffy bike lies broken. The boombox plays "Duel of the Fates".</p>
+            <button onclick="defeatBoss('maul')">THROW POGS AT HIS EYES</button>
+            <button onclick="goTo('maul_fail')">FIGHT WITH A WOODEN STICK</button>
+        </div>
+
+        <!-- BOSS DEFEAT SCENES (10s timer + CONTINUE button) -->
+        <div id="kevin_defeat" class="scene">
+            <h1>VICTORY: KEVIN TRAPPED!</h1>
+            <img src="https://i.pinimg.com/originals/a1/b2/c3/a1b2c3d4e5f6g7h8i9j0.jpg" alt="Kevin Trapped" class="story-img">
+            <p class="ending">You trigger the traps! Paint cans swing. Kevin slips on Micro Machines. He cries for his mom.</p>
+            <div class="timer-text">CONTINUE IN: <span id="kevin_timer">10</span>s</div>
+            <button class="continue-btn" id="kevin_continue">CONTINUE</button>
+        </div>
+
+        <div id="flash_defeat" class="scene">
+            <h1>VICTORY: MING'S REVENGE!</h1>
+            <img src="https://i.pinimg.com/originals/i9/j0/k1/i9j0k1l2m3n4o5p6q7.jpg" alt="Ming Appears" class="story-img">
+            <p class="ending">You shout "MING!" Flash turns pale. Ming appears in a flash of light and drags him away.</p>
+            <div class="timer-text">CONTINUE IN: <span id="flash_timer">10</span>s</div>
+            <button class="continue-btn" id="flash_continue">CONTINUE</button>
+        </div>
+
+        <div id="alf_defeat" class="scene">
+            <h1>VICTORY: ALF CHOKES!</h1>
+            <img src="https://i.pinimg.com/originals/y8/z9/a0/y8z9a0b1c2d3e4f5g.jpg" alt="ALF Choking" class="story-img">
+            <p class="ending">You hand him a stuffed cat. ALF chokes. He poofs away.</p>
+            <div class="timer-text">CONTINUE IN: <span id="alf_timer">10</span>s</div>
+            <button class="continue-btn" id="alf_continue">CONTINUE</button>
+        </div>
+
+        <div id="maul_defeat" class="scene">
+            <h1>VICTORY: POGGED & SLICED!</h1>
+            <img src="https://i.pinimg.com/originals/k3/l4/m5/k3l4m5n6o7p8q9r0s.jpg" alt="Maul Sliced by Own Saber" class="story-img">
+            <p class="ending">You hurl pogs into his eyes! Blinded, Maul swings wildly — and slices himself in half!</p>
+            <div class="timer-text">CONTINUE IN: <span id="maul_timer">10</span>s</div>
+            <button class="continue-btn" id="maul_continue">CONTINUE</button>
+        </div>
+
+        <!-- FAIL SCENES -->
+        <div id="kevin_fail" class="scene">
+            <h1>FAIL: FEATHERED & TOSSED</h1>
+            <img src="https://i.pinimg.com/originals/f6/g7/h8/f6g7h8i9j0k1l2m3n4.jpg" alt="Feathered Timmy" class="story-img">
+            <p class="ending">Kevin dumps glue and feathers on you. You’re a human chicken! as you throw youself out the window. <strong>90s WIN.</strong></p>
+            <button onclick="goTo('bad')">GAME OVER</button>
+        </div>
+
+        <div id="flash_fail" class="scene">
+            <h1>FAIL: ELECTRIC SHOCK</h1>
+            <img src="https://i.pinimg.com/originals/p6/q7/r8/p6q7r8s9t0u1v2w3x.jpg" alt="TV Shock" class="story-img">
+            <p class="ending">The TV shocks you. Flash laughs. You're stuck in a 90s rerun forever. <strong>GAME OVER.</strong></p>
+            <button onclick="goTo('bad')">TRY AGAIN</button>
+        </div>
+
+        <div id="alf_fail" class="scene">
+            <h1>FAIL: ALF EATS YOU</h1>
+            <img src="https://i.pinimg.com/originals/b2/c3/d4/b2c3d4e5f6g7h8i9j.jpg" alt="ALF Eating" class="story-img">
+            <p class="ending">ALF eats the food... then you. "Tasty human!" <strong>GAME OVER.</strong></p>
+            <button onclick="goTo('bad')">TRY AGAIN</button>
+        </div>
+
+        <div id="maul_fail" class="scene">
+            <h1>FAIL: Sliced in Half</h1>
+            <img src="https://i.pinimg.com/originals/t1/u2/v3/t1u2v3w4x5y6z7a8b.jpg" alt="Maul Slicing" class="story-img">
+            <p class="ending">Your stick breaks. Maul slices you in half. <strong>GAME OVER.</strong></p>
+            <button onclick="goTo('bad')">TRY AGAIN</button>
+        </div>
+
+        <!-- FINAL STAND (UNLOCKED AFTER ALL 4 BOSS DEFEATS) -->
+        <div id="final_stand" class="scene">
+            <h1>THE FINAL STAND</h1>
+            <img src="https://i.pinimg.com/originals/4d/5e/6f/4d5e6f7g8h9i0j1k2l.jpg" alt="Macarena in Living Room" class="story-img">
+            <p>All guardians defeated. The <strong>MACARENA</strong> starts. The family dances. You must end it.</p>
+            <button onclick="goTo('perfect')">UNPLUG THE BOOMBOX</button>
+            <button onclick="goTo('bad')">JOIN THE DANCE</button>
+        </div>
+
+        <!-- ENDINGS -->
+        <div id="perfect" class="scene">
+            <h1>NOSTALGIA OBLITERATED</h1>
+            <img src="https://i.pinimg.com/originals/7g/8h/9i/7g8h9i0j1k2l3m4n5o.jpg" alt="Empty 90s House" class="story-img">
+            <p class="ending">The music dies. The family freezes. The 90s fade away. You return to 2025. <strong>TIMMY WINS!</strong></p>
+            <button onclick="restart()">PLAY AGAIN</button>
+        </div>
+
+        <div id="bad" class="scene">
+            <h1>NOSTALGIA TRIUMPHANT</h1>
+            <img src="https://i.pinimg.com/originals/2l/3m/4n/2l3m4n5o6p7q8r9s0t.jpg" alt="Dancing Family" class="story-img">
+            <p class="ending">You dance forever. The 90s claim your soul. You're stuck in 1999. <strong>GAME OVER.</strong></p>
+            <button onclick="restart()">TRY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSound = document.getElementById('clickSound');
+        const victorySound = document.getElementById('victorySound');
+        const gameOverSound = document.getElementById('gameOverSound');
+        const bossSound = document.getElementById('bossSound');
+
+        let defeatedBosses = {
+            kevin: false,
+            flash: false,
+            alf: false,
+            maul: false
+        };
+
+        let currentTimer = null;
+
+        function playSound(id) {
+            const sound = document.getElementById(id);
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
+        }
+
+        function goTo(id) {
+            playSound('clickSound');
+            document.querySelector('.scene.active').classList.remove('active');
+            document.getElementById(id).classList.add('active');
+
+            if (id === 'perfect') playSound('victorySound');
+            if (id === 'bad') playSound('gameOverSound');
+            if (id.includes('fail')) playSound('gameOverSound');
+            if (id === 'backyard' || id.includes('maul')) playSound('bossSound');
+        }
+
+        function defeatBoss(boss) {
+            playSound('victorySound');
+            defeatedBosses[boss] = true;
+            updateCounter();
+
+            const victoryScene = `${boss}_defeat`;
+            goTo(victoryScene);
+
+            // Start 10-second countdown
+            const timerElement = document.getElementById(`${boss}_timer`);
+            let timeLeft = 10;
+            timerElement.textContent = timeLeft;
+
+            currentTimer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(currentTimer);
+                    continueAfterVictory(boss);
+                }
+            }, 1000);
+
+            // Allow manual continue
+            const continueBtn = document.getElementById(`${boss}_continue`);
+            continueBtn.onclick = () => {
+                clearInterval(currentTimer);
+                continueAfterVictory(boss);
+            };
+        }
+
+        function continueAfterVictory(boss) {
+            if (Object.values(defeatedBosses).every(v => v)) {
+                goTo('final_stand');
+            } else {
+                goTo('house');
+            }
+        }
+
+        function updateCounter() {
+            const count = Object.values(defeatedBosses).filter(v => v).length;
+            document.getElementById('defeatedCount').textContent = count;
+        }
+
+        function restart() {
+            playSound('clickSound');
+            defeatedBosses = { kevin: false, flash: false, alf: false, maul: false };
+            updateCounter();
+            if (currentTimer) clearInterval(currentTimer);
+            goTo('intro');
+        }
+
+        window.addEventListener('load', () => {
+            bgMusic.play().catch(() => {});
+            updateCounter();
+        });
+
+        // Keyboard 1-4
+        document.addEventListener('keydown', e => {
+            const active = document.querySelector('.scene.active');
+            const buttons = active.querySelectorAll('button');
+            if (e.key >= '1' && e.key <= '4') {
+                const i = parseInt(e.key) - 1;
+                if (buttons[i]) buttons[i].click();
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            z-index: -1;
+        }
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        .sun {
+            position: absolute;
+            top: 30%; left: 50%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #ff0080, #8000ff, transparent);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            opacity: 0.6;
+            animation: pulse 6s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* GAME */
+        #game {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .scene {
+            background: rgba(10, 0, 30, 0.9);
+            border: 3px solid #ff00ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 
+                0 0 20px #ff00ff,
+                inset 0 0 30px rgba(255, 0, 255, 0.2);
+            min-height: 420px;
+            display: none;
+            animation: fadeIn 0.6s;
+        }
+        .scene.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #ff00ff;
+            text-align: center;
+            font-size: 2em;
+            margin: 0 0 25px;
+            text-shadow: 0 0 15px #ff00ff;
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff00ff; }
+            to { text-shadow: 0 0 25px #ff00ff, 0 0 35px #8000ff; }
+        }
+
+        .story-img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 0 15px #00ffff;
+            image-rendering: pixelated;
+        }
+
+        p {
+            line-height: 1.7;
+            margin: 18px 0;
+            font-size: 0.95em;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin: 14px 0;
+            background: linear-gradient(to bottom, #ff0080, #8000ff);
+            color: white;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1em;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(to bottom, #ff3399, #9933ff);
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px #00ffff;
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .ending {
+            text-align: center;
+            font-size: 1.3em;
+            line-height: 1.8;
+        }
+        .ending h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+        }
+
+        .boss-counter {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px 15px;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            font-size: 0.8em;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .continue-btn {
+            background: linear-gradient(to bottom, #00ff00, #008800);
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        .continue-btn:hover {
+            background: linear-gradient(to bottom, #33ff33, #00cc00);
+            box-shadow: 0 0 30px #00ff00;
+        }
+
+        .timer-text {
+            text-align: center;
+            color: #0f0;
+            font-size: 1.2em;
+            margin: 15px 0;
+            text-shadow: 0 0 8px #0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SYNTHWAVE BACKGROUND -->
+    <div class="bg-container">
+        <div class="grid"></div>
+        <div class="sun"></div>
+    </div>
+
+    <div id="game">
+        <div class="boss-counter">
+            GUARDIANS DEFEATED: <span id="defeatedCount">0</span>/4
+        </div>
+
+        <!-- AUDIO -->
+        <audio id="bgMusic" loop>
+            <source src="d:\html class\media\audio\music\track 1.mkv" type="audio/mp3">
+        </audio>
+        <audio id="clickSound">
+            <source src="https://www.orangefreesounds.com/wp-content/uploads/2017/01/Button-click-sound.mp3" type="audio/mp3">
+        </audio>
+        <audio id="victorySound">
+            <source src="https://www.myinstants.com/media/sounds/final-fantasy-vii-victory-fanfare-1.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gameOverSound">
+            <source src="https://orangefreesounds.com/wp-content/uploads/2023/04/Video-game-over-sound-effect.mp3" type="audio/mp3">
+        </audio>
+        <audio id="bossSound">
+            <source src="https://www.myinstants.com/media/sounds/imperial_march.mp3" type="audio/mp3">
+        </audio>
+
+        <!-- INTRO -->
+        <div id="intro" class="scene active">
+            <h1>NOSTALGIA MUST DIE</h1>
+            <img src="https://i.pinimg.com/originals/8e/5d/3b/8e5d3b9c7a7d1c8e8d7a9b0c1d2e3f4g.jpg" alt="90s Kid's Bedroom" class="story-img">
+            <p>You're <strong>TIMMY</strong>, age 10, from 2025. Your parents trap you in 90s hell: <em>Full House</em>, Tamagotchis, and "Macarena" on repeat.</p>
+            <p>A glowing Game Boy zaps you back to <strong>1999</strong>. You wake up in a real 90s house.</p>
+            <p><strong>DEFEAT ALL 4 GUARDIANS TO UNLOCK THE FINAL ENDING.</strong></p>
+            <button onclick="goTo('house')">ENTER THE 90s HOME</button>
+        </div>
+
+        <!-- MAIN HUB: 90s HOME -->
+        <div id="house" class="scene">
+            <h1>THE 90s HOUSE</h1>
+            <img src="https://i.pinimg.com/originals/3f/2a/1b/3f2a1b9c8d7e6f5a4b3c2d1e0f9g8h7i.jpg" alt="90s Living Room" class="story-img">
+            <p>Beige carpet. Wood paneling. A giant CRT TV hums. Pagers beep. The smell of microwaved popcorn and Drakkar Noir.</p>
+            <p>Choose a guardian to defeat:</p>
+            <button onclick="goTo('bedroom')">BEDROOM (KEVIN)</button>
+            <button onclick="goTo('living')">LIVING ROOM (FLASH)</button>
+            <button onclick="goTo('kitchen')">KITCHEN (ALF)</button>
+            <button onclick="goTo('backyard')">BACKYARD (DARTH MAUL)</button>
+        </div>
+
+        <!-- BEDROOM: KEVIN FROM HOME ALONE -->
+        <div id="bedroom" class="scene">
+            <h1>KEVIN'S BEDROOM</h1>
+            <img src="https://i.pinimg.com/originals/7c/8d/9e/7c8d9e0f1a2b3c4d5e6f7g8h9i0j1k.jpg" alt="90s Bedroom with Toys" class="story-img">
+            <p><strong>KEVIN MCCALLISTER</strong> stands on his bed, arms crossed. "This is my house!"</p>
+            <p>Traps everywhere: pizza boxes, Micro Machines, paint cans.</p>
+            <button onclick="defeatBoss('kevin')">SET OFF HIS OWN TRAPS</button>
+            <button onclick="goTo('kevin_fail')">TRY TO FIGHT HIM</button>
+        </div>
+
+        <!-- LIVING ROOM: FLASH GORDON -->
+        <div id="living" class="scene">
+            <h1>FLASH GORDON'S LIVING ROOM</h1>
+            <img src="https://i.pinimg.com/originals/2b/3c/4d/2b3c4d5e6f7g8h9i0j1k2l.jpg" alt="90s Living Room with VHS" class="story-img">
+            <p><strong>FLASH GORDON</strong> in full 80s glory (but 90s rerun) poses dramatically. "FLASH! AHHH!"</p>
+            <p>VHS tapes of his movie play on loop. The TV glows.</p>
+            <button onclick="defeatBoss('flash')">CALL MING THE MERCILESS</button>
+            <button onclick="goTo('flash_fail')">TRY TO UNPLUG TV</button>
+        </div>
+
+        <!-- KITCHEN: ALF -->
+        <div id="kitchen" class="scene">
+            <h1>ALF'S KITCHEN</h1>
+            <img src="https://i.pinimg.com/originals/6f/7g/8h/6f7g8h9i0j1k2l3m4n5o.jpg" alt="90s Kitchen with ALF" class="story-img">
+            <p><strong>ALF</strong> raids the fridge. "HA! I WANT TO EAT THE CAT!"</p>
+            <p>Cosmic Brownies, Surge, and a cat on the counter.</p>
+            <button onclick="defeatBoss('alf')">FEED HIM THE CAT (FAKE)</button>
+            <button onclick="goTo('alf_fail')">GIVE HIM REAL FOOD</button>
+        </div>
+
+        <!-- BACKYARD: DARTH MAUL -->
+        <div id="backyard" class="scene">
+            <h1>BACKYARD OF DOOM</h1>
+            <img src="https://i.pinimg.com/originals/5e/6f/7g/5e6f7g8h9i0j1k2l3m.jpg" alt="90s Backyard with Maul" class="story-img">
+            <p><strong>DARTH MAUL</strong> ignites his double lightsaber. "At last we will reveal ourselves..."</p>
+            <p>Pogs scatter. A Huffy bike lies broken. The boombox plays "Duel of the Fates".</p>
+            <button onclick="defeatBoss('maul')">THROW POGS AT HIS EYES</button>
+            <button onclick="goTo('maul_fail')">FIGHT WITH A WOODEN STICK</button>
+        </div>
+
+        <!-- BOSS DEFEAT SCENES (10s timer + CONTINUE button) -->
+        <div id="kevin_defeat" class="scene">
+            <h1>VICTORY: KEVIN TRAPPED!</h1>
+            <img src="https://i.pinimg.com/originals/a1/b2/c3/a1b2c3d4e5f6g7h8i9j0.jpg" alt="Kevin Trapped" class="story-img">
+            <p class="ending">You trigger the traps! Paint cans swing. Kevin slips on Micro Machines. He cries for his mom.</p>
+            <div class="timer-text">CONTINUE IN: <span id="kevin_timer">10</span>s</div>
+            <button class="continue-btn" id="kevin_continue">CONTINUE</button>
+        </div>
+
+        <div id="flash_defeat" class="scene">
+            <h1>VICTORY: MING'S REVENGE!</h1>
+            <img src="https://i.pinimg.com/originals/i9/j0/k1/i9j0k1l2m3n4o5p6q7.jpg" alt="Ming Appears" class="story-img">
+            <p class="ending">You shout "MING!" Flash turns pale. Ming appears in a flash of light and drags him away.</p>
+            <div class="timer-text">CONTINUE IN: <span id="flash_timer">10</span>s</div>
+            <button class="continue-btn" id="flash_continue">CONTINUE</button>
+        </div>
+
+        <div id="alf_defeat" class="scene">
+            <h1>VICTORY: ALF CHOKES!</h1>
+            <img src="https://i.pinimg.com/originals/y8/z9/a0/y8z9a0b1c2d3e4f5g.jpg" alt="ALF Choking" class="story-img">
+            <p class="ending">You hand him a stuffed cat. ALF chokes. He poofs away.</p>
+            <div class="timer-text">CONTINUE IN: <span id="alf_timer">10</span>s</div>
+            <button class="continue-btn" id="alf_continue">CONTINUE</button>
+        </div>
+
+        <div id="maul_defeat" class="scene">
+            <h1>VICTORY: POGGED & SLICED!</h1>
+            <img src="https://i.pinimg.com/originals/k3/l4/m5/k3l4m5n6o7p8q9r0s.jpg" alt="Maul Sliced by Own Saber" class="story-img">
+            <p class="ending">You hurl pogs into his eyes! Blinded, Maul swings wildly — and slices himself in half!</p>
+            <div class="timer-text">CONTINUE IN: <span id="maul_timer">10</span>s</div>
+            <button class="continue-btn" id="maul_continue">CONTINUE</button>
+        </div>
+
+        <!-- FAIL SCENES -->
+        <div id="kevin_fail" class="scene">
+            <h1>FAIL: FEATHERED & TOSSED</h1>
+            <img src="https://i.pinimg.com/originals/f6/g7/h8/f6g7h8i9j0k1l2m3n4.jpg" alt="Feathered Timmy" class="story-img">
+            <p class="ending">Kevin dumps glue and feathers on you. You’re a human chicken! as you throw youself out the window. <strong>90s WIN.</strong></p>
+            <button onclick="goTo('bad')">GAME OVER</button>
+        </div>
+
+        <div id="flash_fail" class="scene">
+            <h1>FAIL: ELECTRIC SHOCK</h1>
+            <img src="https://i.pinimg.com/originals/p6/q7/r8/p6q7r8s9t0u1v2w3x.jpg" alt="TV Shock" class="story-img">
+            <p class="ending">The TV shocks you. Flash laughs. You're stuck in a 90s rerun forever. <strong>GAME OVER.</strong></p>
+            <button onclick="goTo('bad')">TRY AGAIN</button>
+        </div>
+
+        <div id="alf_fail" class="scene">
+            <h1>FAIL: ALF EATS YOU</h1>
+            <img src="https://i.pinimg.com/originals/b2/c3/d4/b2c3d4e5f6g7h8i9j.jpg" alt="ALF Eating" class="story-img">
+            <p class="ending">ALF eats the food... then you. "Tasty human!" <strong>GAME OVER.</strong></p>
+            <button onclick="goTo('bad')">TRY AGAIN</button>
+        </div>
+
+        <div id="maul_fail" class="scene">
+            <h1>FAIL: Sliced in Half</h1>
+            <img src="https://i.pinimg.com/originals/t1/u2/v3/t1u2v3w4x5y6z7a8b.jpg" alt="Maul Slicing" class="story-img">
+            <p class="ending">Your stick breaks. Maul slices you in half. <strong>GAME OVER.</strong></p>
+            <button onclick="goTo('bad')">TRY AGAIN</button>
+        </div>
+
+        <!-- FINAL STAND (UNLOCKED AFTER ALL 4 BOSS DEFEATS) -->
+        <div id="final_stand" class="scene">
+            <h1>THE FINAL STAND</h1>
+            <img src="https://i.pinimg.com/originals/4d/5e/6f/4d5e6f7g8h9i0j1k2l.jpg" alt="Macarena in Living Room" class="story-img">
+            <p>All guardians defeated. The <strong>MACARENA</strong> starts. The family dances. You must end it.</p>
+            <button onclick="goTo('perfect')">UNPLUG THE BOOMBOX</button>
+            <button onclick="goTo('bad')">JOIN THE DANCE</button>
+        </div>
+
+        <!-- ENDINGS -->
+        <div id="perfect" class="scene">
+            <h1>NOSTALGIA OBLITERATED</h1>
+            <img src="https://i.pinimg.com/originals/7g/8h/9i/7g8h9i0j1k2l3m4n5o.jpg" alt="Empty 90s House" class="story-img">
+            <p class="ending">The music dies. The family freezes. The 90s fade away. You return to 2025. <strong>TIMMY WINS!</strong></p>
+            <button onclick="restart()">PLAY AGAIN</button>
+        </div>
+
+        <div id="bad" class="scene">
+            <h1>NOSTALGIA TRIUMPHANT</h1>
+            <img src="https://i.pinimg.com/originals/2l/3m/4n/2l3m4n5o6p7q8r9s0t.jpg" alt="Dancing Family" class="story-img">
+            <p class="ending">You dance forever. The 90s claim your soul. You're stuck in 1999. <strong>GAME OVER.</strong></p>
+            <button onclick="restart()">TRY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSound = document.getElementById('clickSound');
+        const victorySound = document.getElementById('victorySound');
+        const gameOverSound = document.getElementById('gameOverSound');
+        const bossSound = document.getElementById('bossSound');
+
+        let defeatedBosses = {
+            kevin: false,
+            flash: false,
+            alf: false,
+            maul: false
+        };
+
+        let currentTimer = null;
+
+        function playSound(id) {
+            const sound = document.getElementById(id);
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
+        }
+
+        function goTo(id) {
+            playSound('clickSound');
+            document.querySelector('.scene.active').classList.remove('active');
+            document.getElementById(id).classList.add('active');
+
+            if (id === 'perfect') playSound('victorySound');
+            if (id === 'bad') playSound('gameOverSound');
+            if (id.includes('fail')) playSound('gameOverSound');
+            if (id === 'backyard' || id.includes('maul')) playSound('bossSound');
+        }
+
+        function defeatBoss(boss) {
+            playSound('victorySound');
+            defeatedBosses[boss] = true;
+            updateCounter();
+
+            const victoryScene = `${boss}_defeat`;
+            goTo(victoryScene);
+
+            // Start 10-second countdown
+            const timerElement = document.getElementById(`${boss}_timer`);
+            let timeLeft = 10;
+            timerElement.textContent = timeLeft;
+
+            currentTimer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(currentTimer);
+                    continueAfterVictory(boss);
+                }
+            }, 1000);
+
+            // Allow manual continue
+            const continueBtn = document.getElementById(`${boss}_continue`);
+            continueBtn.onclick = () => {
+                clearInterval(currentTimer);
+                continueAfterVictory(boss);
+            };
+        }
+
+        function continueAfterVictory(boss) {
+            if (Object.values(defeatedBosses).every(v => v)) {
+                goTo('final_stand');
+            } else {
+                goTo('house');
+            }
+        }
+
+        function updateCounter() {
+            const count = Object.values(defeatedBosses).filter(v => v).length;
+            document.getElementById('defeatedCount').textContent = count;
+        }
+
+        function restart() {
+            playSound('clickSound');
+            defeatedBosses = { kevin: false, flash: false, alf: false, maul: false };
+            updateCounter();
+            if (currentTimer) clearInterval(currentTimer);
+            goTo('intro');
+        }
+
+        window.addEventListener('load', () => {
+            bgMusic.play().catch(() => {});
+            updateCounter();
+        });
+
+        // Keyboard 1-4
+        document.addEventListener('keydown', e => {
+            const active = document.querySelector('.scene.active');
+            const buttons = active.querySelectorAll('button');
+            if (e.key >= '1' && e.key <= '4') {
+                const i = parseInt(e.key) - 1;
+                if (buttons[i]) buttons[i].click();
+            }
+        });
+    </script>
+</body>
+</html>
